@@ -1,17 +1,16 @@
 require_relative "../lib/tendril/loop"
 
 weave{
-  puts 1
-  tick
-  puts 2
+[1,2,3].async.each do |i|
+  puts i
+end
 }
 
 weave{
-  puts 3
-  tick
-  puts 4
+[4,5,6].async.each do |i|
+  puts i
+end
 }
-
 # Kernel.send :alias_method, :old_puts, :puts
 # Tendril::async :puts
 
