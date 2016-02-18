@@ -1,4 +1,4 @@
-require_relative 'tendril'
+require_relative '../lib/tendril'
 require "benchmark"
 
 Benchmark.bm do |bm|
@@ -35,7 +35,6 @@ Benchmark.bm do |bm|
           tick
           print "\rA very long output statement : #{7}. Current thread: #{Thread.current}"
           print "\rA very long output statement : #{8}. Current thread: #{Thread.current}"
-          Tendril.stop
         end
       end
     end

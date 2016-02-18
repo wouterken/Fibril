@@ -2,7 +2,7 @@ require "tendril/version"
 
 class Tendril < Fiber
   class << self
-    attr_accessor :running, :stopped, :queue, :task_count, :guards
+    attr_accessor :running, :stopped, :queue, :task_count, :guards, :current
   end
 
   self.queue = []
@@ -36,8 +36,8 @@ class Tendril < Fiber
     Fiber.yield
   end
 
-  def async(method_name)
-    Tendril.async method_name
+  def current
+    self
   end
 
   def self.deplete_guard(guard)
@@ -57,22 +57,15 @@ class Tendril < Fiber
     end
   end
 
-  def perform_async
-    Thread.new do
-      yield.tap{ Tendril.queue << self }
-    end.tap{
-      Fiber.yield
-    }.value
-  end
-
   def self.stop
     Tendril do
       Tendril.stopped = true
     end
   end
 
-  def next
-    self.resume
+  def resume
+    Tendril.current = self
+    super
   end
 
   def self.start
@@ -80,20 +73,29 @@ class Tendril < Fiber
     self.stopped = false
     self.running = true
     if queue.any?
-      queue.shift.next
+      queue.shift.resume
       self.loop if queue.any?
     end
     self.running = false
   end
 
   def self.loop
-    while ((Tendril.task_count > 0 || queue.any?) && !Tendril.stopped)
-      Tendril.queue.shift.next if Tendril.queue.any?
+    while ((Tendril.task_count > 1 || queue.any?) && !Tendril.stopped)
+      Tendril.queue.shift.resume if Tendril.queue.any?
     end
   end
 
   def Guard(i, tendril)
     return Guard.new(i, tendril)
+  end
+
+  def perform_async
+    self.tick
+    Thread.new do
+      yield.tap{ Tendril.queue << self }
+    end.tap{
+      Fiber.yield
+    }.value
   end
 
   def self.async(method_name)
@@ -106,7 +108,30 @@ class Tendril < Fiber
     end
   end
 
-  class Guard
+
+  class AsyncProxy
+    attr_accessor :target
+
+    def initialize(target)
+      self.target = target
+    end
+
+    def method_missing(name, *args, &block)
+      ::Tendril.perform_async do
+        target.send(name, *args, &block)
+      end
+    end
+  end
+end
+
+  class ::BasicObject
+    def async
+      @async_proxy ||= ::Tendril::AsyncProxy.new(self)
+    end
+  end
+
+
+  class Tendril::Guard
     class << self
       attr_accessor :guard_seq
     end
@@ -117,7 +142,7 @@ class Tendril < Fiber
 
     def self.create(tendril, counter=1)
       self.guard_seq += 1
-      guard = Guard.new(self.guard_seq, counter, tendril)
+      guard = Tendril::Guard.new(self.guard_seq, counter, tendril)
       tendril.guards << guard
       return guard
     end
@@ -159,7 +184,7 @@ class Tendril < Fiber
       loop{ blk[] }
     end
   end
-end
+
 
 def Tendril(&block)
   tendril = Tendril.new(&block).tap do |t|
@@ -167,5 +192,7 @@ def Tendril(&block)
   end
   guard = Tendril::Guard.create(tendril)
 end
+
+
 
 Kernel.send :alias_method, :weave, :Tendril

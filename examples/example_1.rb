@@ -1,4 +1,4 @@
-require_relative 'tendril'
+require_relative '../lib/tendril'
 
 require 'benchmark'
 
@@ -31,7 +31,7 @@ Benchmark.bm do |bm|
 
     Tendril do
       i = 0
-      Tendril::async :sleep
+      # Tendril::async :sleep
       await(
             weave{ starts = Time.now; res = get_res;i = res + 20 + i; puts "Weave 1 took #{Time.now - starts}" }.until{ i > 260 },
             weave{ starts = Time.now; res = get_res;i = res + 100 + i; puts "Weave 2 took #{Time.now - starts}" }.loop(2)
