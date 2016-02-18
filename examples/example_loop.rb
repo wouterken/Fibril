@@ -1,12 +1,12 @@
-require_relative "../lib/tendril/loop"
+require_relative "../lib/fibril/loop"
 
-weave{
+fibril{
   puts 1
   tick
   puts 3
 }
 
-weave{
+fibril{
   puts 2
   tick
   puts 4

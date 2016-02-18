@@ -1,10 +1,10 @@
-require_relative '../lib/tendril'
+require_relative '../lib/fibril'
 
 require 'benchmark'
 
 
 def get_5
-  5.tap{ sleep 0.5 }
+  5.tap{ async.sleep 0.5 }
 end
 
 def get_res
@@ -16,10 +16,10 @@ def get_res
 end
 Benchmark.bm do |bm|
   # bm.report{
-  #   Tendril do
+  #   Fibril do
   #     i = 0
-  #     await weave{ i = get_5 + 20 + i }.until{ i > 260 },
-  #           weave{ i = get_5 + 100 + i }.loop(2) do
+  #     await fibril{ i = get_5 + 20 + i }.until{ i > 260 },
+  #           fibril{ i = get_5 + 100 + i }.loop(2) do
   #       puts "Final i is #{i}"
   #     end
   #   end
@@ -29,12 +29,11 @@ Benchmark.bm do |bm|
   # sleep 2
   bm.report{
 
-    Tendril do
+    Fibril do
       i = 0
-      # Tendril::async :sleep
       await(
-            weave{ starts = Time.now; res = get_res;i = res + 20 + i; puts "Weave 1 took #{Time.now - starts}" }.until{ i > 260 },
-            weave{ starts = Time.now; res = get_res;i = res + 100 + i; puts "Weave 2 took #{Time.now - starts}" }.loop(2)
+            fibril{ starts = Time.now; res = get_res;i = res + 20 + i; puts "Weave 1 took #{Time.now - starts}" }.until{ i > 260 },
+            fibril{ starts = Time.now; res = get_res;i = res + 100 + i; puts "Weave 2 took #{Time.now - starts}" }.loop(2)
           ) do
         puts "Final i is #{i}"
       end
@@ -43,9 +42,9 @@ Benchmark.bm do |bm|
 end
 
 
-# Tendril do
-#   await weave{ puts 1; tick; puts 3 },
-#         weave{ puts 2; tick; puts 4 } do
+# Fibril do
+#   await fibril{ puts 1; tick; puts 3 },
+#         fibril{ puts 2; tick; puts 4 } do
 #       puts "Finished"
 #   end
 # end

@@ -1,4 +1,4 @@
-require_relative 'tendril'
+require_relative 'fibril'
 require "benchmark"
 
 Benchmark.bm do |bm|
@@ -19,8 +19,8 @@ Benchmark.bm do |bm|
     i = 0
 
     100.times do
-      Tendril do
-        Tendril do
+      Fibril do
+        Fibril do
           puts "A very long output statement : #{1}. Current thread: #{Thread.current}"
           puts "A very long output statement : #{2}. Current thread: #{Thread.current}"
           tick
@@ -28,13 +28,13 @@ Benchmark.bm do |bm|
           puts "A very long output statement : #{4}. Current thread: #{Thread.current}"
         end
 
-        Tendril do
+        Fibril do
           puts "A very long output statement : #{5}. Current thread: #{Thread.current}"
           puts "A very long output statement : #{6}. Current thread: #{Thread.current}"
           tick
           puts "A very long output statement : #{7}. Current thread: #{Thread.current}"
           puts "A very long output statement : #{8}. Current thread: #{Thread.current}"
-          Tendril.stop
+          Fibril.stop
         end
       end
     end

@@ -1,8 +1,8 @@
-require "tendril/version"
+require "fibril/version"
 require 'ostruct'
 
 
-class Tendril < Fiber
+class Fibril < Fiber
   class << self
     attr_accessor :running, :stopped, :queue, :task_count, :guards, :current, :id_seq
   end
@@ -22,40 +22,40 @@ class Tendril < Fiber
   end
 
   def initialize(&blk)
-    self.id = Tendril.id_seq += 1
+    self.id = Fibril.id_seq += 1
     self.block  = blk
     self.guards = []
-    define_singleton_method :execute_tendril, self.block
+    define_singleton_method :execute_fibril, self.block
     super(&method(:execute))
-    Tendril.queue << self
+    Fibril.queue << self
   end
 
   def reset(guard)
-    copy = Tendril.new(&self.block)
+    copy = Fibril.new(&self.block)
     copy.guards << guard
     return copy
   end
 
   def execute
-    Tendril.task_count += 1
-    execute_tendril
+    Fibril.task_count += 1
+    execute_fibril
     self.guards.each(&:visit)
-    Tendril.task_count -= 1
-    Tendril.log "Ending #{id}"
+    Fibril.task_count -= 1
+    Fibril.log "Ending #{id}"
   end
 
   def tick
-    Tendril.enqueue self
+    Fibril.enqueue self
     self.yield
   end
 
-  def self.enqueue(tendril)
-    Tendril.log "Enqueing tendril #{tendril.id}"
-    Tendril.queue << tendril
+  def self.enqueue(fibril)
+    Fibril.log "Enqueing fibril #{fibril.id}"
+    Fibril.queue << fibril
   end
 
   def yield
-    Tendril.log "Yielding #{id}"
+    Fibril.log "Yielding #{id}"
     Fiber.yield
   end
 
@@ -81,7 +81,7 @@ class Tendril < Fiber
       block: block
     }
     guards.each do |guard|
-      Tendril.guards[guard.id] = await_block
+      Fibril.guards[guard.id] = await_block
     end
   end
 
@@ -98,14 +98,14 @@ class Tendril < Fiber
   end
 
   def self.stop
-    Tendril do
-      Tendril.stopped = true
+    Fibril do
+      Fibril.stopped = true
     end
   end
 
   def resume
-    Tendril.current = self
-    Tendril.log "Resuming #{id}"
+    Fibril.current = self
+    Fibril.log "Resuming #{id}"
     super
   end
 
@@ -115,20 +115,20 @@ class Tendril < Fiber
     self.running = true
     if queue.any?
       queue.shift.resume
-      self.loop if queue.any? || Tendril.task_count > 0
+      self.loop if queue.any? || Fibril.task_count > 0
     end
     self.running = false
   end
 
   def self.loop
-    Tendril.log "Starting loop inside #{Tendril.current}"
-    while ((Tendril.task_count > 0 || queue.any?) && !Tendril.stopped)
-      Tendril.queue.shift.resume if Tendril.queue.any?
+    Fibril.log "Starting loop inside #{Fibril.current}"
+    while ((Fibril.task_count > 0 || queue.any?) && !Fibril.stopped)
+      Fibril.queue.shift.resume if Fibril.queue.any?
     end
   end
 
-  def Guard(i, tendril)
-    return Guard.new(i, tendril)
+  def Guard(i, fibril)
+    return Guard.new(i, fibril)
   end
 
   class AsyncProxy
@@ -139,11 +139,11 @@ class Tendril < Fiber
     end
 
     def method_missing(name, *args, &block)
-      waiting = Tendril.current
+      waiting = Fibril.current
       Thread.new do
-        target.send(name, *args, &block).tap{ Tendril.enqueue waiting }
+        target.send(name, *args, &block).tap{ Fibril.enqueue waiting }
       end.tap{
-        Tendril.current.yield
+        Fibril.current.yield
       }.value
     end
   end
@@ -154,24 +154,24 @@ class Tendril < Fiber
       attr_accessor :guard_seq
     end
 
-    attr_accessor :tendril, :id, :break_condition, :depleted
+    attr_accessor :fibril, :id, :break_condition, :depleted
 
     self.guard_seq = 0
 
-    def self.create(tendril, counter=1)
+    def self.create(fibril, counter=1)
       self.guard_seq += 1
-      guard = Tendril::Guard.new(self.guard_seq, counter, tendril)
-      tendril.guards << guard
+      guard = Fibril::Guard.new(self.guard_seq, counter, fibril)
+      fibril.guards << guard
       return guard
     end
 
     def await
-      Tendril.current.tick while !self.depleted
+      Fibril.current.tick while !self.depleted
     end
 
-    def initialize(id, counter, tendril)
+    def initialize(id, counter, fibril)
       self.id = id
-      self.tendril =  tendril
+      self.fibril =  fibril
       self.break_condition = 1
     end
 
@@ -180,17 +180,17 @@ class Tendril < Fiber
       when Proc
         if self.break_condition[]
           self.depleted = true
-          Tendril.deplete_guard(self)
+          Fibril.deplete_guard(self)
         else
-          self.tendril    = self.tendril.reset(self)
+          self.fibril    = self.fibril.reset(self)
         end
       else
         self.break_condition -= 1
         if self.break_condition.zero?
           self.depleted = true
-          Tendril.deplete_guard(self)
+          Fibril.deplete_guard(self)
         else
-          self.tendril = self.tendril.reset(self)
+          self.fibril = self.fibril.reset(self)
         end
       end
     end
@@ -224,18 +224,18 @@ end
 
 class ::BasicObject
   def async
-    @async_proxy ||= ::Tendril::AsyncProxy.new(self)
+    @async_proxy ||= ::Fibril::AsyncProxy.new(self)
   end
 end
 
 
-def Tendril(&block)
-  tendril = Tendril.new(&block).tap do |t|
-    Tendril.start unless Tendril.running
+def Fibril(&block)
+  fibril = Fibril.new(&block).tap do |t|
+    Fibril.start unless Fibril.running
   end
-  guard = Tendril::Guard.create(tendril)
+  guard = Fibril::Guard.create(fibril)
 end
 
 
 
-Kernel.send :alias_method, :weave, :Tendril
+Kernel.send :alias_method, :fibril, :Fibril

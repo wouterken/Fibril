@@ -1,8 +1,8 @@
 require 'test_helper'
 
-class TendrilTest < Minitest::Test
+class FibrilTest < Minitest::Test
   def test_that_it_has_a_version_number
-    refute_nil ::Tendril::VERSION
+    refute_nil ::Fibril::VERSION
   end
 
   def test_it_does_something_useful

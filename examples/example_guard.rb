@@ -1,11 +1,11 @@
-require_relative "../lib/tendril/loop"
+require_relative "../lib/fibril/loop"
 
-weave{
+fibril{
   variables.guard.await
   puts "First finished"
 }
 
-variables.guard = weave{
+variables.guard = fibril{
   sleep 0.2
   puts "Second finished"
 }.until{ true }

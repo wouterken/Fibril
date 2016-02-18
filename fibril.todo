@@ -1,0 +1,39 @@
+ ✔ Guard becomes event driven - no polling @done (16-02-18 09:28)
+ ✔ Fibrils return single count guards @done (16-02-18 09:28)
+ ✔ Can await one or more guards @done (16-02-18 09:28)
+ ✔ Use semaphore type object for synchronising multiple async calls @done (16-02-18 19:03)
+ ✔ Use counter to determine if any work left to do, if not auto-stop @done (16-02-18 19:03)
+ ✔ Create event loop import @done (16-02-18 21:15)
+ ✔ Create continous and counting loop construct @done (16-02-18 21:15)
+ ✔ Create async object @done (16-02-19 07:35)
+ ✔ Create promises @done (16-02-19 07:49)
+ ✔ Turn into gem @done (16-02-19 07:49)
+
+ ☐ Add keywords syntax highlighting in Sublime
+    - promise, async, fibril, await, await_all
+
+ ☐ Create smarter loop importer. Finds import statement and only evals everything past itself
+
+ ☐ Write performance tests
+ ☐ Use efficient ring buffer as queue and block when full
+
+ ☐ Examples:
+
+   ☐ Weave with tick
+   ☐ Weave with async IO
+   ☐ Weave external await
+   ☐ Weave with internal await
+   ☐ Promises
+
+   ☐ Disk read + write
+   ☐ Database queries using AR
+   ☐ Network IO
+   ☐ Asyncifying common functions
+   ☐ Asyncifying class methods
+   ☐ Asyncifying instance methods
+   ☐ Asyncifying module methods
+   ☐ Comparison to thread
+   ☐ Comparison to event machine
+
+ ☐ Rename to Weave
+ ☐ Refactor

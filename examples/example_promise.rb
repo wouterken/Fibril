@@ -1,22 +1,22 @@
-require_relative "../lib/tendril/loop"
+require_relative "../lib/fibril/loop"
 
 pending  = promise{ sleep 1; 3 }
 pending2 = promise{ sleep 0.1; 4 }
 
-weave{
+fibril{
   puts "First"
   puts async.await(pending)
   puts "First"
 }
 
-weave{
+fibril{
   puts "Second"
   result = async.await_all pending, pending2
   puts "Second"
   puts "Result is #{result}"
 }
 
-weave{
+fibril{
   puts "Third"
   puts async.await(pending2)
   puts "Third"
