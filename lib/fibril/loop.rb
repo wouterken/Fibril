@@ -2,10 +2,10 @@ require_relative '../fibril'
 require 'pry'
 
 call_stack = caller
-lines = IO.read(call_stack[0][/.*?(?=\:)/,0]).split("\n")
+filename   = call_stack[0][/(.*?(?=\:)):(\d+)/,1]
+linenumber = call_stack[0][/(.*?(?=\:)):(\d+)/,2].to_i
+lines = IO.read(filename).split("\n")[linenumber..-1]
 
-if %r{require.*".*?fibril/loop"} =~ lines[0].gsub("'",?").gsub(/\s+/,' ').strip
-  $LOAD_PATH << '.'
-  fibril{ eval lines[1..-1].join("\n") }
-  exit(0)
-end
+$LOAD_PATH << '.'
+fibril{ eval lines.join("\n") }
+exit(0)

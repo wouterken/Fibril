@@ -1,4 +1,4 @@
-require_relative 'fibril'
+require_relative '../lib/fibril'
 require "benchmark"
 
 Benchmark.bm do |bm|

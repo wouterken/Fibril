@@ -27,5 +27,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "byebug", "~> 8.2.1"
   spec.add_development_dependency "pry-byebug", "~> 3.3.0"
   spec.add_development_dependency 'pry', '~> 0.10.2', '>= 0.10.0'
+  spec.add_development_dependency 'redis'
   spec.add_development_dependency "minitest"
 end
