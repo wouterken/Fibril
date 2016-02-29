@@ -1,3 +1,10 @@
+##
+# The Fibril event loop.
+# Requiring this file will execute all code between the require statement and EOF inside a fibril before exiting.
+#
+#  Ideal for scripts that need to use cooperative multitasking without having to wrap in an extra fibril simply to
+# start the loop
+##
 require_relative '../fibril'
 require 'pry'
 

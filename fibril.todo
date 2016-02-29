@@ -17,7 +17,8 @@
 
 
  ☐ Write performance tests
- ☐ Use efficient ring buffer as queue and block when full
+ ✘ Use efficient ring buffer as queue and block when full @cancelled (16-03-01 09:05)
+ ☐ Split imports into core, and full functionality to prevent conflicts
 
  ☐ Examples:
 

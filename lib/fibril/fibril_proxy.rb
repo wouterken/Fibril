@@ -5,6 +5,9 @@ class Fibril::FibrilProxy
     self.target = target
   end
 
+  ##
+  # Execute target method within a new fibril
+  ##
   def method_missing(name, *args, &block)
     context = target
     fibril{

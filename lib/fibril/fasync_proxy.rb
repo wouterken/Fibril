@@ -5,6 +5,11 @@ class FAsyncProxy
     self.target = target
   end
 
+  ##
+  # Execute target method within a new fork. Enqueue the current fibril
+  # to be resumed as soon as async task is finished.
+  # The result of the forked process is passed to the parent by Marshaling.
+  ##
   def method_missing(name, *_args, &_block)
     define_singleton_method(name){|*args, &block|
       read, write = IO.pipe
