@@ -3,16 +3,18 @@ require_relative "../lib/fibril/loop"
 $starts = Time.now
 
 def finished
-  puts "Took #{Time.now - $starts}"
+  # puts "Took #{Time.now - $starts}"
+  tick if Fibril.current
 end
 
 
 a1 = fibril{
-  async.finished
+  finished
+
 }.loop(5)
 
 a2 = fibril{
-  async.finished
+  finished
 }.loop(5)
 
 await(a1, a2){

@@ -1,5 +1,7 @@
 require "fibril/version"
 require 'ostruct'
+require 'fc'
+
 class Fibril < Fiber
   class << self
     attr_accessor :running, :stopped, :queue, :task_count, :guards, :current, :id_seq, :loop_thread
@@ -8,6 +10,7 @@ class Fibril < Fiber
   self.queue = []
   self.guards = Hash.new{|h,k| }
   self.id_seq = 0
+  self.task_count = 0
 
   attr_accessor :fiber, :guards, :block, :id
 
@@ -24,8 +27,16 @@ class Fibril < Fiber
     self.block  = blk
     self.guards = []
     define_singleton_method :execute_fibril, self.block
-    super(&method(:execute))
-    Fibril.queue << self
+    if Fibril.running
+      super(&method(:execute))
+      Fibril.enqueue self
+    else
+      Fibril.task_count = 0
+      Fibril.stopped = false
+      Fibril.running = true
+      self.execute_fibril
+      Fibril.start
+    end
   end
 
   def reset(guard)
@@ -46,11 +57,10 @@ class Fibril < Fiber
 
   def tick
     if Thread.current != Fibril.loop_thread
-      puts "Current thread is #{Thread.current.object_id}"
-      puts "Fibril thread is #{Fibril.loop_thread.object_id}"
-      puts "WARN: Cannot tick inside async code outside of main loop thread. This will be a noop"
-      exit(0)
-    else
+      Fibril.log "Current thread is #{Thread.current.object_id}"
+      Fibril.log "Fibril thread is #{Fibril.loop_thread.object_id}"
+      Fibril.log "WARN: Cannot tick inside async code outside of main loop thread. This will be a noop"
+    elsif !Fibril.queue.empty?
       Fibril.enqueue self
       self.yield
     end
@@ -135,21 +145,30 @@ class Fibril < Fiber
   end
 
   def self.start
-    self.task_count = 0
-    self.stopped = false
-    self.running = true
-    if queue.any?
-      queue.shift.resume
-      self.loop if queue.any? || Fibril.task_count > 0
+
+    if !queue.empty?
+      self.loop if !queue.empty? || Fibril.task_count > 0
     end
     self.running = false
+  end
+
+  def self.profile(test)
+    starts = Time.now
+    result = yield
+    ends = Time.now
+    puts "#{test} took #{ends - starts}"
+    return result
   end
 
   def self.loop
     Fibril.log "Starting loop inside #{Fibril.current}"
     Fibril.loop_thread = Thread.current
-    while ((Fibril.task_count > 0 || queue.any?) && !Fibril.stopped)
-      Fibril.queue.shift.resume if Fibril.queue.any?
+    while ((@task_count > 0 || !@queue.empty?) && !@stopped)
+      Fibril.current = nil
+      while !@queue.empty?
+        job = Fibril.queue.shift
+        job.resume
+      end
     end
   end
 

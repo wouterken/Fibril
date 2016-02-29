@@ -1,7 +1,5 @@
 def Fibril(&block)
-  fibril = Fibril.new(&block).tap do |t|
-    Fibril.start unless Fibril.running
-  end
+  fibril = Fibril.new(&block)
   Fibril::Guard.create(fibril)
 end
 
