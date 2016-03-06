@@ -1,14 +1,6 @@
 ##
-# Expose the Fibril, promise and fpromise top level functions
+# Expose thepromise and fpromise top level functions
 ##
-
-##
-# Create a new fibril
-##
-def Fibril(&block)
-  fibril = Fibril.new(&block)
-  Fibril::Guard.create(fibril)
-end
 
 ##
 # Create a new promise

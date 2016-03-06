@@ -12,13 +12,15 @@
  ✔ Provide optional timeout value to Fibril looping @done (16-02-23 08:58)
  ✔ Create smarter loop importer. Finds import statement and only evals everything past itself @done (16-02-23 09:01)
  ✔ Add fasync and fpromise @done (16-02-27 11:19)
- ☐ Add keywords syntax highlighting in Sublime
-    - promise, async, fibril, await, await_all
+ ✘ Add keywords syntax highlighting in Sublime @cancelled (16-03-01 18:34)
+    ✘ promise, async, fibril, await, await_all @cancelled (16-03-01 18:34)
 
 
- ☐ Write performance tests
  ✘ Use efficient ring buffer as queue and block when full @cancelled (16-03-01 09:05)
- ☐ Split imports into core, and full functionality to prevent conflicts
+ ✔ Split imports into core, and full functionality to prevent conflicts @done (16-03-01 18:41)
+ ☐ Enumerable ticking with fibril
+ ☐ Enumerable concurrency, every nth
+ ☐ Add meaningful errors when common mistakes are made
 
  ☐ Examples:
 
@@ -38,5 +40,5 @@
    ☐ Asyncifying module methods
    ☐ Comparison to thread
    ☐ Comparison to event machine
-
- ☐ Refactor
+ ☐ Write performance tests
+ ☐ Write tests

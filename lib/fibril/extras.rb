@@ -1,0 +1,8 @@
+require 'fibril/control'
+require 'fibril/basic_object'
+require 'fibril/async_proxy'
+require 'fibril/fasync_proxy'
+require 'fibril/fibril_proxy'
+require 'fibril/fpromise'
+require 'fibril/non_blocking_io_wrapper'
+require 'fibril/forked_non_blocking_io_wrapper'

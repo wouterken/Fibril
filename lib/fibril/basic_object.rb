@@ -16,19 +16,4 @@ class ::BasicObject
   def fasync
     @fasync_proxy ||= ::Fibril::FAsyncProxy.new(self)
   end
-
-  ##
-  # This method has two methods of use.
-  # Either
-  # A. call with block to create a new fibril
-  # B. call without block to create a fibril proxy. Any methods invoked on a proxy are executed on the target from
-  # within a new Fibril
-  ##
-  def fibril(&block)
-    if block_given?
-      Fibril(&block)
-    else
-      @fibril_proxy ||= ::Fibril::FibrilProxy.new(self)
-    end
-  end
 end
