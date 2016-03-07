@@ -13,7 +13,12 @@ class Fibril::AsyncProxy
     define_singleton_method(name) do |*args, &block|
       waiting = Fibril.current
       Thread.new do
-        target.send(name, *args, &block).tap{ Fibril.enqueue waiting }
+        begin
+          target.send(name, *args, &block).tap{ Fibril.enqueue waiting }
+        rescue Exception => e
+          puts "Exception! #{e}"
+          Fibril.enqueue waiting
+        end
       end.tap do
         Fibril.current.yield
       end.value

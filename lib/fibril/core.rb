@@ -48,7 +48,8 @@ class Fibril < Fiber
       Fibril.task_count = 0
       Fibril.stopped = false
       Fibril.running = true
-      self.execute_fibril
+      super(&method(:execute))
+      Fibril.enqueue self
       Fibril.start
     end
   end
@@ -178,7 +179,7 @@ class Fibril < Fiber
 
   def self.start
     if !queue.empty?
-      self.loop if !queue.empty? || Fibril.task_count > 0
+      self.start_loop if !queue.empty? || Fibril.task_count > 0
     end
     self.running = false
   end
@@ -191,7 +192,7 @@ class Fibril < Fiber
     return result
   end
 
-  def self.loop
+  def self.start_loop
     Fibril.log "Starting loop inside #{Fibril.current}"
     Fibril.loop_thread = Thread.current
     while ((@task_count > 0 || !@queue.empty?) && !@stopped)
@@ -215,10 +216,14 @@ end
 require 'pry'
 def Fibril(*guard_names, &block)
   fibril = Fibril.new(&block)
-  Fibril::Guard.create(fibril).tap do |guard|
-    guard_names.each do |name|
-      Fibril.guard.send("#{name}=", guard)
+  if Fibril.running
+    Fibril::Guard.create(fibril).tap do |guard|
+      guard_names.each do |name|
+        Fibril.guard.send("#{name}=", guard)
+      end
     end
+  else
+    fibril
   end
 end
 
@@ -254,7 +259,13 @@ class Enumerator
       }
     end
     Kernel.fibril(*guard_names){
-      await(*guards)
+      all_results = await(*guards)
+      length = all_results.max{|x| x.length}.length
+      length.times.map do |i|
+        all_results.find{|list|
+          list[i] != nil
+        }[i]
+      end
     }
   end
 end
