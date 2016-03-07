@@ -177,7 +177,6 @@ class Fibril < Fiber
   end
 
   def self.start
-
     if !queue.empty?
       self.loop if !queue.empty? || Fibril.task_count > 0
     end

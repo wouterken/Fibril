@@ -5,13 +5,15 @@
 ##
 # Create a new promise
 ##
-def promise(&blk)
-  return Fibril::Promise.new(&blk)
-end
+class ::BasicObject
+  def promise(&blk)
+    return Fibril::Promise.new(&blk)
+  end
 
-##
-# Create a new forked promise
-##
-def fpromise(&blk)
-  return Fibril::FPromise.new(&blk)
+  ##
+  # Create a new forked promise
+  ##
+  def fpromise(&blk)
+    return Fibril::FPromise.new(&blk)
+  end
 end
