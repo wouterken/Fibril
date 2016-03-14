@@ -1,4 +1,6 @@
-class FAsyncProxy
+require 'yaml'
+
+class Fibril::FAsyncProxy
   attr_accessor :target
 
   def initialize(target)
@@ -17,7 +19,7 @@ class FAsyncProxy
       pid = fork do
         result = target.send(name, *args, &block)
         read.close
-        Marshal.dump(result, write)
+        YAML.dump(result, write)
       end
       write.close
       result = nil
@@ -27,7 +29,7 @@ class FAsyncProxy
         Fibril.enqueue waiting
       }
       Fibril.current.yield
-      Marshal.load(result)
+      YAML.load(result)
     }
     send(name, *_args, &_block)
   end

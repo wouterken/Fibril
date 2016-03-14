@@ -20,6 +20,7 @@ class Fibril::ForkedNonBlockingIOWrapper < Fibril::NonBlockingIOWrapper
       fork do
         read.close
         block[]
+        exit(0)
       end
 
       write.close

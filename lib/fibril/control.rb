@@ -7,13 +7,13 @@
 ##
 class ::BasicObject
   def promise(&blk)
-    return Fibril::Promise.new(&blk)
+    return ::Fibril::Promise.new(&blk)
   end
 
   ##
   # Create a new forked promise
   ##
   def fpromise(&blk)
-    return Fibril::FPromise.new(&blk)
+    return ::Fibril::FPromise.new(&blk)
   end
 end

@@ -1,6 +1,5 @@
 require 'fibril/guard'
 require 'fibril/promise'
-require 'fibril/tick_proxy'
 require 'fibril/fibril_proxy'
 require 'ostruct'
 
@@ -62,12 +61,18 @@ class Fibril < Fiber
 
   def execute
     Fibril.task_count += 1
-    result = execute_fibril
+    exception = nil
+    result = begin
+      execute_fibril
+    rescue Exception => e
+      exception = e
+    end
     self.guards.each do |guard|
       guard.visit(result)
     end
     Fibril.task_count -= 1
     Fibril.log "Ending #{id}"
+    raise exception if exception
   end
 
   def tick
@@ -178,30 +183,29 @@ class Fibril < Fiber
   end
 
   def self.start
-    if !queue.empty?
-      self.start_loop if !queue.empty? || Fibril.task_count > 0
-    end
+    self.start_loop if !queue.empty?
     self.running = false
   end
 
   def self.profile(test)
     starts = Time.now
     result = yield
-    ends = Time.now
-    puts "#{test} took #{ends - starts}"
+    ends   = Time.now
+    Fibril.log "#{test} took #{ends - starts}"
     return result
   end
 
   def self.start_loop
     Fibril.log "Starting loop inside #{Fibril.current}"
     Fibril.loop_thread = Thread.current
-    while ((@task_count > 0 || !@queue.empty?) && !@stopped)
+    while pending_tasks?
       Fibril.current = nil
-      while !@queue.empty?
-        job = Fibril.queue.shift
-        job.resume
-      end
+      Fibril.queue.shift.resume while !queue.empty?
     end
+  end
+
+  def self.pending_tasks?
+    ((@task_count > 0 || !@queue.empty?) && !@stopped)
   end
 
   def Guard(i, fibril)
@@ -213,17 +217,13 @@ end
 ##
 # Create a new fibril
 ##
-require 'pry'
 def Fibril(*guard_names, &block)
   fibril = Fibril.new(&block)
-  if Fibril.running
-    Fibril::Guard.create(fibril).tap do |guard|
-      guard_names.each do |name|
-        Fibril.guard.send("#{name}=", guard)
-      end
+  return fibril unless Fibril.running
+  Fibril::Guard.create(fibril).tap do |guard|
+    guard_names.each do |name|
+      Fibril.guard.send("#{name}=", guard)
     end
-  else
-    fibril
   end
 end
 

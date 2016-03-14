@@ -16,4 +16,12 @@ class ::BasicObject
   def fasync
     @fasync_proxy ||= ::Fibril::FAsyncProxy.new(self)
   end
+
+
+  ##
+  # A tick proxy. Executes any methods invoked via proxy on target in a separate fork
+  ##
+  def tick
+    @tick_proxy ||= ::Fibril::TickProxy.new(self)
+  end
 end

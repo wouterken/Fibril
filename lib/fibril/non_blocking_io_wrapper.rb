@@ -37,7 +37,7 @@ class Fibril::NonBlockingIOWrapper
   # Add the ingested message to the response queue and schedule all fibrils
   # waiting on events to receive messages
   ##
-  def ingest(*args)
+  def ingest(args)
     begin
       self.response_queue << args
       self.fibrils.shift.enqueue while self.fibrils.any?
