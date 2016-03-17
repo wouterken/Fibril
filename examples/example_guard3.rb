@@ -1,13 +1,12 @@
 require_relative "../lib/fibril/loop"
 
 [*0...10].tick(:result_one).map do |i|
-  print "#{i} "
+  print "Item-1-#{i}, "
   i * 3
 end
 
 [*10...20].tick(:result_two).map do |i|
-  print "#{i} "
-  async.sleep 0.001
+  print "Item-2-#{i}, "
   i * 11
 end
 
@@ -17,33 +16,31 @@ end
 }
 
 await(guard.result_one, guard.result_two){
-  puts "f2"
-  puts (await guard.result_one).zip((await guard.result_two)).inject(:+)
+  puts "\nSum guard one & two:"
+  puts (await guard.result_one).zip((await guard.result_two)).inject(:+).to_s
   await(guard.result_three){
     puts "Continued!"
   }
 }
 
-
 await(guard.result_one){
-  puts "f1"
-  puts "\n#{await guard.result_one}"
-  puts "\n#{await guard.result_two}"
+  puts "\nGuard one results:"
+  puts "#{await guard.result_one}"
+  puts "Guard two results: #{await guard.result_two}"
 }
-
 
 
 fibril{
-  res = await(guard.res_one, guard.res_two)
+  res = await(guard.result_four, guard.result_five)
   puts "Res is #{res}"
 }
 
-fibril(:res_one){
+fibril(:result_four){
   async.sleep 0.5
   "hello"
 }
 
-fibril(:res_two){
+fibril(:result_five){
   async.sleep 0.1
   "world"
 }

@@ -1,7 +1,7 @@
 require_relative "../lib/fibril/loop"
 
-pending  = promise{ sleep 1; 3 }
-pending2 = promise{ sleep 0.1; 4 }
+pending  = future{ sleep 1; 3 }
+pending2 = future{ sleep 0.1; 4 }
 
 fibril{
   puts "First"

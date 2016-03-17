@@ -7,7 +7,7 @@ describe Fibril do
 
   it "responds to control methods" do
     assert_respond_to(Kernel, :fibril)
-    assert_respond_to(Kernel, :promise)
+    assert_respond_to(Kernel, :future)
   end
 
   it "starts the event loop inside the first fibril" do

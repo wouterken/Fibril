@@ -6,14 +6,14 @@
  ✔ Create event loop import @done (16-02-18 21:15)
  ✔ Create continous and counting loop construct @done (16-02-18 21:15)
  ✔ Create async object @done (16-02-19 07:35)
- ✔ Create promises @done (16-02-19 07:49)
+ ✔ Create futures @done (16-02-19 07:49)
  ✔ Turn into gem @done (16-02-19 07:49)
  ✔ Create Fibril proxy @done (16-02-19 19:18)
  ✔ Provide optional timeout value to Fibril looping @done (16-02-23 08:58)
  ✔ Create smarter loop importer. Finds import statement and only evals everything past itself @done (16-02-23 09:01)
- ✔ Add fasync and fpromise @done (16-02-27 11:19)
+ ✔ Add fasync and ffuture @done (16-02-27 11:19)
  ✘ Add keywords syntax highlighting in Sublime @cancelled (16-03-01 18:34)
-    ✘ promise, async, fibril, await, await_all @cancelled (16-03-01 18:34)
+    ✘ future, async, fibril, await, await_all @cancelled (16-03-01 18:34)
 
 
  ✘ Use efficient ring buffer as queue and block when full @cancelled (16-03-01 09:05)
@@ -29,7 +29,7 @@
    ☐ Fibril external await
    ☐ Fibril with internal await
    ☐ Fibril wrapping redis
-   ☐ Promises
+   ☐ Futures
 
    ☐ Disk read + write
    ☐ Database queries using AR

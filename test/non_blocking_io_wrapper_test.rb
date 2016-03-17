@@ -17,7 +17,7 @@ describe Fibril::NonBlockingIOWrapper do
     result = 0
     fibril{
       fibril{
-        result += wrapper.await
+        result += wrapper.await[0]
       }.loop(300)
     }
 
@@ -29,12 +29,12 @@ describe Fibril::NonBlockingIOWrapper do
     result = 0
     fibril{
       fibril{
-        value =  wrapper.await
+        value =  wrapper.await.first
         result += value
       }.loop(300)
 
       fibril{
-        value =  wrapper.await
+        value =  wrapper.await.first
         result += value
       }.loop(300)
     }

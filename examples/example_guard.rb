@@ -1,15 +1,17 @@
 require_relative "../lib/fibril/loop"
 
 fibril{
-  variables.guard.await
+  puts "Waiting on below fibril"
+  await(variables.guard)
   puts "First finished"
 }
 
-variables.guard = fibril{
+guard.g1 = fibril{
   sleep 0.2
-  puts "Second finished"
-}.until{ true }
+  puts "Middle finished"
+}
 
-await(variables.guard){
-  puts "Guard depleted"
+puts "Waiting on above"
+await(guard.g1){
+  puts "Third finished"
 }

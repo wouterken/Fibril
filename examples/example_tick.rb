@@ -1,5 +1,3 @@
-puts 'before loop'
-
 require_relative "../lib/fibril/loop"
 
 fibril{

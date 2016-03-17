@@ -1,19 +1,19 @@
 ##
-# Expose thepromise and fpromise top level functions
+# Expose thefuture and ffuture top level functions
 ##
 
 ##
-# Create a new promise
+# Create a new future
 ##
 class ::BasicObject
-  def promise(&blk)
-    return ::Fibril::Promise.new(&blk)
+  def future(&blk)
+    return ::Fibril::Future.new(&blk)
   end
 
   ##
-  # Create a new forked promise
+  # Create a new forked future
   ##
-  def fpromise(&blk)
-    return ::Fibril::FPromise.new(&blk)
+  def ffuture(&blk)
+    return ::Fibril::FFuture.new(&blk)
   end
 end

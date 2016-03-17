@@ -1,9 +1,9 @@
-require_relative 'promise'
+require_relative 'future'
 
-class Fibril::FPromise < Fibril::Promise
+class Fibril::FFuture < Fibril::Future
 
   ##
-  # A Forked promise. Fulfils the same promise api as Fibril::Promise
+  # A Forked future. Fulfils the same future api as Fibril::Future
   # but runs the block inside a new fork instead of a new thread..
   ##
   def initialize(&blk)
@@ -15,7 +15,7 @@ class Fibril::FPromise < Fibril::Promise
     end
     write.close
     result = nil
-    self.promise_thread = Thread.new do
+    self.future_thread = Thread.new do
       result = read.read
       Process.wait(pid)
       Marshal.load(result)

@@ -1,11 +1,11 @@
 require 'test_helper'
 
-describe Fibril::FPromise do
-  it "can execute promise code in a separate fork" do
-    prom = Fibril::FPromise.new{
+describe Fibril::FFuture do
+  it "can execute future code in a separate fork" do
+    fut = Fibril::FFuture.new{
       5 + 10
     }
-    assert_equal prom.await, 15
+    assert_equal fut.await, 15
   end
 
   it "can return any serializable data structure" do
@@ -14,27 +14,27 @@ describe Fibril::FPromise do
         world: [1,2,3.0, "test", :symbol, true]
       }
     }
-    prom = Fibril::FPromise.new{
+    fut = Fibril::FFuture.new{
       {
       hello: {
         world: [1,2,3.0, "test", :symbol, true]
       }
     }
     }
-    assert_equal prom.await, relatively_complex
+    assert_equal fut.await, relatively_complex
   end
 
-  it "can await multiple fpromises" do
+  it "can await multiple ffutures" do
     result = nil
     fibril{
-      result = await_all(Fibril::FPromise.new{3}, Fibril::FPromise.new{4})
+      result = await_all(Fibril::FFuture.new{3}, Fibril::FFuture.new{4})
     }
     assert_equal [3,4], result
   end
 
   it "does not share memory" do
     result = -1
-    prom = Fibril::FPromise.new{
+    fut = Fibril::FFuture.new{
       result = 10
     }
     assert_equal result, -1

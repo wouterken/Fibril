@@ -43,6 +43,3 @@ redis = RedisPubSubWrapper.new 'test'
 fibril.publish(redis).loop(3)
 fibril.recv(redis).loop(9)
 
-
-# fibril.send
-# fibril.recv.loop(3)

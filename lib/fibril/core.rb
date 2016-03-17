@@ -1,6 +1,7 @@
 require 'fibril/guard'
-require 'fibril/promise'
+require 'fibril/future'
 require 'fibril/fibril_proxy'
+require 'fibril/tick_proxy'
 require 'ostruct'
 
 class Fibril < Fiber
@@ -145,7 +146,7 @@ class Fibril < Fiber
 
   def await(*guards, &block)
     guards.map!{|guard| guard.kind_of?(Symbol) ? Fibril.guard.send(guard) : guard}
-    raise "Invalid guard given #{guards}" unless guards.all?{|g| g.kind_of?(Guard) || g.kind_of?(Promise)}
+    raise "Invalid guard given #{guards}" unless guards.all?{|g| g.kind_of?(Guard) || g.kind_of?(Future)}
     if block_given?
       return block[*guards.map(&:result)] if guards.all?(&:result?)
       await_block = {
@@ -158,16 +159,17 @@ class Fibril < Fiber
       end
     else
       guard = guards.first
-      guard.kind_of?(Promise) ? await_promise(guard) : await_fibril(guards)
+      guard.kind_of?(Future) ? await_future(guard) : await_fibril(guards)
     end
   end
 
-  def await_promise(promise)
-    promise.await
+  def await_future(future)
+    tick
+    future.await
   end
 
-  def await_all(*promises)
-    promises.map(&:await)
+  def await_all(*futures)
+    futures.map(&:await)
   end
 
   def self.stop

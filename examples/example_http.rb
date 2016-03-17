@@ -32,7 +32,7 @@ part_one = fibril{
   fibril(:local).get_response_code('http://localhost:4000',true)
   fibril{
     puts "#{await(:google, :yahoo, :github, :engadget, :local)}"
-    puts "Async took #{Time.now - starts}"
+    puts "Async v1 took #{Time.now - starts}"
   }
 }
 
@@ -55,6 +55,6 @@ await(part_one){
   }
   await(:a_google, :a_yahoo, :a_github, :a_engadget, :a_local){|google, yahoo, github, engadget, local|
     puts "#{[google, yahoo, github, engadget, local]}"
-    puts "Async2 took #{Time.now - start2}"
+    puts "Async v2 took #{Time.now - start2}"
   }
 }

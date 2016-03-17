@@ -1,9 +1,9 @@
 require_relative "../lib/fibril/loop"
 
-
-def puts_hi
-  puts "hi"
+def heartbeat
+  puts "•"
 end
 
-
-fibril.puts_hi.loop(200, 0.001)
+fibril.puts('ping').loop(20, 0.5)
+fibril{ puts "pong" }.loop(20, 0.5)
+fibril.heartbeat.loop(2, 2)
