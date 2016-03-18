@@ -164,7 +164,7 @@ class Fibril < Fiber
   end
 
   def await_future(future)
-    tick
+    tick while future.alive?
     future.await
   end
 

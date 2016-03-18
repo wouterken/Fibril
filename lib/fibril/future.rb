@@ -14,6 +14,10 @@ class Fibril::Future
     self.future_thread.join.value
   end
 
+  def alive?
+    self.future_thead.alive?
+  end
+
   def close
     self.future_thread.kill
   end

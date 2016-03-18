@@ -2,14 +2,13 @@
 
 Fibril is a pure Ruby library that allows you to use cooperative multitasking inside your Ruby code. It is a similar concept to the event loop in JavaScript, but makes use of context switching through Fibers to prevent the need for callback functions or promises.
 
-Traditionally you might approach concurrency in Ruby through the use of threads and concurrency primitives to synchronise critical sections of your code. Fibril takes an alternative approach where instead everything is synchronous/safe unless explicitly told otherwise.
+Traditionally you might approach concurrency in Ruby through the use of threads combined with concurrency primitives to synchronise critical sections of your code. Fibril takes an alternative approach where instead everything is synchronous and safe from concurrent state mutations unless explicitly told otherwise.
 
 You can use Fibril to yield from a flow of execution while waiting on an asychrouous call and fibril will schedule the same flow to resume as soon the asynchronous call is complete. All without the need for callbacks.
 
 You can be explicit in how you weave your fibrils together to ensure the order in which your multiple tasks execute is deterministic.
 
 ## Why is it useful?
-
 You may be interested in Fibril if:
 * Your code has many fast operations that are often blocked by slow operations
 * You want to use two or more Ruby libraries which require a blocking IO loop together.
@@ -17,6 +16,8 @@ You may be interested in Fibril if:
 * You want to manipulate multiple streams of data in parallel without having to worry about synchronisation across threads.
 
 In scenarios where many IO bound operations are the performance bottleneck of your application Fibril is likely to provide performance benefits. In other scenarios performance should be comparable to that using threads or executing all tasks synchronously.
+
+At its simplest Fibril will allow you to write source code that looks shallow and linear while allowing multiple flows of execution to complete concurrently.
 
 ## Installation
 
@@ -36,7 +37,7 @@ Or install it yourself as:
 
 ## Usage
 
-Read the wiki [here]() to learn how to use Fibril.
+Read the wiki [here]() and examine the examples in this repository to learn how to use Fibril.
 
 ## Development
 
