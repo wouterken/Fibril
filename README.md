@@ -37,7 +37,7 @@ Or install it yourself as:
 
 ## Usage
 
-Read the wiki [here]() and examine the examples in this repository to learn how to use Fibril.
+Read the wiki [here](https://github.com/wouterken/Fibril/wiki) and examine the [examples](https://github.com/wouterken/Fibril/tree/master/examples) in this repository to learn how to use Fibril.
 
 ## Development
 
@@ -47,7 +47,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/fibril.
+Bug reports and pull requests are welcome on GitHub at https://github.com/wouterken/fibril.
 
 ## License
 
