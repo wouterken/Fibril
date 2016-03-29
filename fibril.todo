@@ -18,22 +18,23 @@
 
  ✘ Use efficient ring buffer as queue and block when full @cancelled (16-03-01 09:05)
  ✔ Split imports into core, and full functionality to prevent conflicts @done (16-03-01 18:41)
- ☐ Enumerable ticking with fibril
- ☐ Enumerable concurrency, every nth
+ ✔ Enumerable ticking with fibril @done (16-03-21 09:03)
+ ✔ Enumerable concurrency, every nth @done (16-03-21 09:03)
  ☐ Add meaningful errors when common mistakes are made
+ ☐ Add option to peek and consume in non blocking IO wrapper
 
  ☐ Examples:
 
-   ☐ Fibril with tick
-   ☐ Fibril with async IO
-   ☐ Fibril external await
-   ☐ Fibril with internal await
-   ☐ Fibril wrapping redis
-   ☐ Futures
+   ✔ Fibril with tick @done (16-03-21 09:03)
+   ✔ Fibril with async IO @done (16-03-21 09:03)
+   ✔ Fibril external await @done (16-03-21 09:03)
+   ✔ Fibril with internal await @done (16-03-21 09:03)
+   ✔ Fibril wrapping redis @done (16-03-21 09:03)
+   ✔ Futures @done (16-03-21 09:03)
 
    ☐ Disk read + write
    ☐ Database queries using AR
-   ☐ Network IO
+   ☐ Network IO = Https
    ☐ Asyncifying common functions
    ☐ Asyncifying class methods
    ☐ Asyncifying instance methods

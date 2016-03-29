@@ -291,4 +291,8 @@ class ::BasicObject
   def tick(*guard_names, **args)
     ::Fibril::TickProxy.new(self, *guard_names, **args)
   end
+
+  def await(*args, &block)
+    Fibril.current.await(*args, &block)
+  end
 end
