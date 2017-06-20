@@ -219,6 +219,7 @@ end
 ##
 # Create a new fibril
 ##
+
 def Fibril(*guard_names, &block)
   fibril = Fibril.new(&block)
   return fibril unless Fibril.running
@@ -293,6 +294,6 @@ class ::BasicObject
   end
 
   def await(*args, &block)
-    Fibril.current.await(*args, &block)
+    ::Fibril.current.await(*args, &block)
   end
 end

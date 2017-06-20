@@ -1,4 +1,4 @@
-require_relative "../lib/fibril/loop"
+require 'fibril/loop'
 require 'net/http'
 
 def print_inline(lines, clear=true)

@@ -4,7 +4,8 @@
 
 ##
 # Create a new future
-##
+#
+
 class ::BasicObject
   def future(&blk)
     return ::Fibril::Future.new(&blk)

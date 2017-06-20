@@ -1,4 +1,4 @@
-require_relative "../lib/fibril/loop"
+require 'fibril/loop'
 
 fibril(:g1){
   sleep 1

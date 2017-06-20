@@ -1,4 +1,4 @@
-require_relative "../lib/fibril/loop"
+require 'fibril/loop'
 require 'redis'
 ##
 # Example non blocking IO wrapper for Redis IO
@@ -25,21 +25,25 @@ end
 ##
 
 def publish(redis)
+  $total_invocation_count ||= 0
+  $total_invocation_count += 1
   async.sleep 0.1
-  puts "SEND: #{'a message 1'}"
-  redis.async.publish('a message 1')
-  puts "SEND: #{'a message 2'}"
-  redis.async.publish('a message 2')
-  puts "SEND: #{'a message 3'}"
-  redis.async.publish('a message 3')
+  puts "SEND: #{"M1:I#{$total_invocation_count}"}"
+  redis.async.publish("M1:I#{$total_invocation_count}")
+  puts "SEND: #{"M2:I#{$total_invocation_count}"}"
+  redis.async.publish("M2:I#{$total_invocation_count}")
+  puts "SEND: #{"M3:I#{$total_invocation_count}"}"
+  redis.async.publish("M3:I#{$total_invocation_count}")
 end
 
 def recv(redis)
+  $total_recv_count ||= 0
+  $total_recv_count += 1
   _channel, message = redis.await
-  puts "RECV: #{message}"
+  puts "RECV: #{message}: total: #{$total_recv_count}"
 end
 
 redis = RedisPubSubWrapper.new 'test'
-fibril.publish(redis).loop(3)
-fibril.recv(redis).loop(9)
+fibril.publish(redis).loop(10)
+fibril.recv(redis).loop(30)
 

@@ -4,6 +4,29 @@
 #
 #  Ideal for scripts that need to use cooperative multitasking without having to wrap in an extra fibril simply to
 # start the loop
+#
+#
+# Note using fibril/loop is equivalent to wrapping the entire script in a Fibril do ... end.
+# E.g
+#
+#
+# require 'fibril/loop'
+# puts "in a fibril"
+#
+#
+#
+# is equivalent to:
+#
+#
+#
+# require 'fibril'
+#
+# Fibril do
+#   puts "In a fibril"
+# end
+#
+#
+#
 ##
 require_relative '../fibril'
 require 'pry'

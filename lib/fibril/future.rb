@@ -15,7 +15,7 @@ class Fibril::Future
   end
 
   def alive?
-    self.future_thead.alive?
+    self.future_thread.alive?
   end
 
   def close

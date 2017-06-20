@@ -1,4 +1,4 @@
-require_relative "../lib/fibril/loop"
+require 'fibril/loop'
 
 def get_response_code(url, async=false)
   url = URI.parse(url)
@@ -14,14 +14,14 @@ def get_response_code(url, async=false)
 end
 
 
-
+starts = Time.now
 Fibril.profile(:sync_http){
   get_response_code('http://www.google.com')
   get_response_code('http://nz.news.yahoo.com/')
   get_response_code('http://github.com')
   get_response_code('http://www.engadget.com')
-  get_response_code('http://localhost:4000')
 }
+puts "Sync v1 took #{Time.now - starts}"
 
 part_one = fibril{
   starts = Time.now
@@ -29,9 +29,9 @@ part_one = fibril{
   fibril(:engadget).get_response_code('http://www.engadget.com', true)
   fibril(:yahoo).get_response_code('http://nz.news.yahoo.com/', true)
   fibril(:github).get_response_code('http://github.com',true)
-  fibril(:local).get_response_code('http://localhost:4000',true)
+
   fibril{
-    puts "#{await(:google, :yahoo, :github, :engadget, :local)}"
+    puts "#{await(:google, :yahoo, :github, :engadget)}"
     puts "Async v1 took #{Time.now - starts}"
   }
 }
@@ -50,11 +50,10 @@ await(part_one){
   fibril(:a_github){
     async.get_response_code('http://github.com')
   }
-  fibril(:a_local){
-    async.get_response_code('http://localhost:4000')
-  }
-  await(:a_google, :a_yahoo, :a_github, :a_engadget, :a_local){|google, yahoo, github, engadget, local|
-    puts "#{[google, yahoo, github, engadget, local]}"
+
+
+  await(:a_google, :a_yahoo, :a_github, :a_engadget){|google, yahoo, github, engadget|
+    puts "#{[google, yahoo, github, engadget]}"
     puts "Async v2 took #{Time.now - start2}"
   }
 }

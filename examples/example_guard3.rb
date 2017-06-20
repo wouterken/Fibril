@@ -1,4 +1,4 @@
-require_relative "../lib/fibril/loop"
+require 'fibril/loop'
 
 [*0...10].tick(:result_one).map do |i|
   print "Item-1-#{i}, "

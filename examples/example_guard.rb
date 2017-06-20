@@ -1,8 +1,8 @@
-require_relative "../lib/fibril/loop"
+require 'fibril/loop'
 
 fibril{
   puts "Waiting on below fibril"
-  await(variables.guard)
+  await(guard.g1)
   puts "First finished"
 }
 

@@ -1,23 +1,23 @@
-require_relative "../lib/fibril/loop"
+require 'fibril/loop'
 
 pending  = future{ sleep 1; 3 }
 pending2 = future{ sleep 0.1; 4 }
 
 fibril{
-  puts "First"
-  puts await(pending)
-  puts "First"
+  puts "Enter First"
+  await(pending)
+  puts "Leave First"
 }
 
 fibril{
-  puts "Second"
-  result = await_all pending, pending2
-  puts "Second"
-  puts "Result is #{result}"
+  puts "Enter Second"
+  await pending
+  await pending2
+  puts "Leave Second"
 }
 
 fibril{
-  puts "Third"
-  puts await(pending2)
-  puts "Third"
+  puts "Enter Third"
+  await(pending2)
+  puts "Leave Third"
 }

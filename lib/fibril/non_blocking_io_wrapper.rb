@@ -6,7 +6,7 @@ class Fibril::NonBlockingIOWrapper
   # This allows you to have multiple block IO loops operating in parallel whilst still processing all
   # resulting messages in the main thread.
   ##
-  attr_accessor :guard, :response_queue, :fibrils
+  attr_accessor :guard, :response_queue, :fibrils, :result
 
   def initialize(*, &block)
     self.response_queue = []

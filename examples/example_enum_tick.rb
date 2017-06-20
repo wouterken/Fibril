@@ -1,4 +1,4 @@
-require_relative "../lib/fibril/loop"
+require "fibril/loop"
 
 [1,3,5].each.fibril do |i|
   print "#{i},"

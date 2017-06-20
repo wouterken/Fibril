@@ -1,5 +1,4 @@
-require_relative "../lib/fibril/loop"
-
+require "fibril/loop"
 
 def long_running_task
   sleep 1
