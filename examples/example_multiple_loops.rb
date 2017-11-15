@@ -44,9 +44,9 @@ end
 # Make an HTTP request
 ##
 fibril(:http2) do
-  url = URI.parse('http://www.google.com')
+  url = URI.parse('https://www.facebook.com')
   req = Net::HTTP::Get.new(url.to_s)
-  res = Net::HTTP.async.start(url.host, url.port) {|http|
+  res = Net::HTTP.async.start(url.host, url.port, use_ssl: true) {|http|
     http.request(req)
   }
   variables.http_response_code2 = res.code
@@ -60,7 +60,7 @@ fibril(:print_loop){
     "Fibonacci: #{variables.fib1}",
     "Prime: #{variables.prime.to_s[-18..-1]}",
     "HTTP Response code (example.com): #{variables.http_response_code}",
-    "HTTP Response code (google.com): #{variables.http_response_code2}"
+    "HTTP Response code (facebook.com): #{variables.http_response_code2}"
   ]
 }.until(:fibonacci, :primes, :http)
 
@@ -72,7 +72,7 @@ await(:print_loop){
     "Fibonacci: #{variables.fib1}",
     "Prime: #{variables.prime.to_s[-18..-1]}",
     "HTTP Response code (example.com): #{await :http}",
-    "HTTP Response code (google.com): #{await :http2}",
+    "HTTP Response code (facebook.com): #{await :http2}",
     "Finished!"
   ], false
 }

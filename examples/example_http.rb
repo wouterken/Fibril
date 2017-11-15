@@ -1,13 +1,14 @@
+require 'net/http'
 require 'fibril/loop'
 
 def get_response_code(url, async=false)
   url = URI.parse(url)
   req = Net::HTTP::Get.new(url.to_s)
   res = async ?
-    Net::HTTP.async.start(url.host, url.port) {|http|
+    Net::HTTP.async.start(url.host, url.port, use_ssl: true) {|http|
       http.request(req)
     }
-  : Net::HTTP.start(url.host, url.port) {|http|
+  : Net::HTTP.start(url.host, url.port, use_ssl: true) {|http|
       http.request(req)
     }
   variables.http_response_code2 = res.code
@@ -16,19 +17,19 @@ end
 
 starts = Time.now
 Fibril.profile(:sync_http){
-  get_response_code('http://www.google.com')
-  get_response_code('http://nz.news.yahoo.com/')
-  get_response_code('http://github.com')
-  get_response_code('http://www.engadget.com')
+  get_response_code('https://www.google.com')
+  get_response_code('https://nz.news.yahoo.com/')
+  get_response_code('https://github.com')
+  get_response_code('https://www.engadget.com')
 }
 puts "Sync v1 took #{Time.now - starts}"
 
 part_one = fibril{
   starts = Time.now
-  fibril(:google).get_response_code('http://www.google.com', true)
-  fibril(:engadget).get_response_code('http://www.engadget.com', true)
-  fibril(:yahoo).get_response_code('http://nz.news.yahoo.com/', true)
-  fibril(:github).get_response_code('http://github.com',true)
+  fibril(:google).get_response_code('https://www.google.com', true)
+  fibril(:engadget).get_response_code('https://www.engadget.com', true)
+  fibril(:yahoo).get_response_code('https://nz.news.yahoo.com/', true)
+  fibril(:github).get_response_code('https://github.com',true)
 
   fibril{
     puts "#{await(:google, :yahoo, :github, :engadget)}"
@@ -39,16 +40,16 @@ part_one = fibril{
 await(part_one){
   start2 = Time.now
   fibril(:a_engadget){
-    async.get_response_code('http://www.engadget.com')
+    async.get_response_code('https://www.engadget.com')
   }
   fibril(:a_google){
-    async.get_response_code('http://www.google.com')
+    async.get_response_code('https://www.google.com')
   }
   fibril(:a_yahoo){
-    async.get_response_code('http://nz.news.yahoo.com/')
+    async.get_response_code('https://nz.news.yahoo.com/')
   }
   fibril(:a_github){
-    async.get_response_code('http://github.com')
+    async.get_response_code('https://github.com')
   }
 
 
